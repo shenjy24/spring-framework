@@ -114,9 +114,12 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					return null;
 				});
 			}
+			//如果不需要动态改变的方法，直接使用反射实例化即可
 			return BeanUtils.instantiateClass(ctor, args);
 		}
 		else {
+			//如果用户使用了replace或lookup的配置方法，则使用cglib将拦截增强器设置进去，
+			//返回值为包含拦截器的代理实例
 			return instantiateWithMethodInjection(bd, beanName, owner, ctor, args);
 		}
 	}
