@@ -347,6 +347,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		Object transaction = doGetTransaction();
 		boolean debugEnabled = logger.isDebugEnabled();
 
+		//判断当前线程是否存在事务，判断根据为当前线程记录的连接不为空且连接中的transactionActive属性不为空
 		if (isExistingTransaction(transaction)) {
 			// Existing transaction found -> check propagation behavior to find out how to behave.
 			return handleExistingTransaction(def, transaction, debugEnabled);
@@ -397,6 +398,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		boolean newSynchronization = (getTransactionSynchronization() != SYNCHRONIZATION_NEVER);
 		DefaultTransactionStatus status = newTransactionStatus(
 				definition, transaction, true, newSynchronization, debugEnabled, suspendedResources);
+		//构造transaction，包括设置ConnectionHolder、隔离级别、timeout
+		//如果是新连接，绑定到当前线程
 		doBegin(transaction, definition);
 		prepareSynchronization(status, definition);
 		return status;
