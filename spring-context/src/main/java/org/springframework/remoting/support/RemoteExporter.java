@@ -151,6 +151,7 @@ public abstract class RemoteExporter extends RemotingSupport {
 		checkService();
 		checkServiceInterface();
 
+		//添加代理接口
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.addInterface(getServiceInterface());
 
@@ -164,9 +165,11 @@ public abstract class RemoteExporter extends RemotingSupport {
 			}
 		}
 
+		//设置要代理的目标类
 		proxyFactory.setTarget(getService());
 		proxyFactory.setOpaque(true);
 
+		//创建代理
 		return proxyFactory.getProxy(getBeanClassLoader());
 	}
 

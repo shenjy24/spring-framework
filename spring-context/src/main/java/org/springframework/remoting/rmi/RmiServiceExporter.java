@@ -294,6 +294,7 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 				this.registry.rebind(this.serviceName, this.exportedObject);
 			}
 			else {
+				//绑定服务名称到remote object,外界调用serviceName的时候会被exportedObject接收
 				this.registry.bind(this.serviceName, this.exportedObject);
 			}
 		}
@@ -330,12 +331,15 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 			if (logger.isDebugEnabled()) {
 				logger.debug("Looking for RMI registry at port '" + registryPort + "' of host [" + registryHost + "]");
 			}
+			//如果registryHost不为空，尝试获取对应主机的Registry
 			Registry reg = LocateRegistry.getRegistry(registryHost, registryPort, clientSocketFactory);
+			//远程连接测试
 			testRegistry(reg);
 			return reg;
 		}
 
 		else {
+			//获取本机的Registry
 			return getRegistry(registryPort, clientSocketFactory, serverSocketFactory);
 		}
 	}
@@ -353,6 +357,7 @@ public class RmiServiceExporter extends RmiBasedExporter implements Initializing
 			throws RemoteException {
 
 		if (clientSocketFactory != null) {
+			//是否复用已有的Registry
 			if (this.alwaysCreateRegistry) {
 				logger.debug("Creating new RMI registry");
 				return LocateRegistry.createRegistry(registryPort, clientSocketFactory, serverSocketFactory);

@@ -186,6 +186,7 @@ public class RmiClientInterceptor extends RemoteInvocationBasedAccessor
 				// straight LocateRegistry.getRegistry/Registry.lookup calls.
 				URL url = new URL(null, getServiceUrl(), new DummyURLStreamHandler());
 				String protocol = url.getProtocol();
+				//验证传输协议
 				if (protocol != null && !"rmi".equals(protocol)) {
 					throw new MalformedURLException("Invalid URL scheme '" + protocol + "'");
 				}
@@ -259,6 +260,7 @@ public class RmiClientInterceptor extends RemoteInvocationBasedAccessor
 	@Override
 	@Nullable
 	public Object invoke(MethodInvocation invocation) throws Throwable {
+		//获取服务器中注册的remote对象
 		Remote stub = getStub();
 		try {
 			return doInvoke(invocation, stub);
@@ -368,6 +370,7 @@ public class RmiClientInterceptor extends RemoteInvocationBasedAccessor
 		else {
 			// traditional RMI stub
 			try {
+				//不是通过Spring构建的，直接使用反射进行方法调用
 				return RmiClientInterceptorUtils.invokeRemoteMethod(invocation, stub);
 			}
 			catch (InvocationTargetException ex) {
